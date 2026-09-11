@@ -1,26 +1,107 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /*
+   * LOLITAS — Identidad visual oficial v2.1
+   *
+   * Estos valores pertenecen al sistema corporativo aprobado.
+   * No deben sustituirse por colores "parecidos" en componentes.
+   */
+  --brand-burgundy: #4a0e17;
+  --brand-ivory: #fdfbf7;
+  --brand-rose: #d4a398;
+  --brand-ink: #111111;
+
+  /*
+   * Sistema funcional de interfaz.
+   *
+   * No añadimos una nueva paleta corporativa:
+   * derivamos superficies y texto de la identidad existente.
+   */
+  --surface-night: var(--brand-ink);
+  --surface-burgundy: var(--brand-burgundy);
+  --surface-light: var(--brand-ivory);
+
+  --text-on-dark: var(--brand-ivory);
+  --text-on-light: var(--brand-ink);
+  --text-muted-dark: rgba(253, 251, 247, 0.62);
+  --text-muted-light: rgba(17, 17, 17, 0.62);
+
+  --border-dark: rgba(253, 251, 247, 0.14);
+  --border-light: rgba(17, 17, 17, 0.14);
+
+  /*
+   * Sistema tipográfico oficial.
+   *
+   * DejaVu se mantiene como primera opción.
+   * Los fallbacks evitan una interfaz rota mientras
+   * preparamos las fuentes web locales definitivas.
+   */
+  --font-editorial:
+    "DejaVu Serif",
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  --font-functional:
+    "DejaVu Sans",
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  --background: var(--surface-night);
+  --foreground: var(--text-on-dark);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-brand-burgundy: var(--brand-burgundy);
+  --color-brand-ivory: var(--brand-ivory);
+  --color-brand-rose: var(--brand-rose);
+  --color-brand-ink: var(--brand-ink);
+
+  --color-surface-night: var(--surface-night);
+  --color-surface-burgundy: var(--surface-burgundy);
+  --color-surface-light: var(--surface-light);
+
+  --color-text-on-dark: var(--text-on-dark);
+  --color-text-on-light: var(--text-on-light);
+  --color-text-muted-dark: var(--text-muted-dark);
+  --color-text-muted-light: var(--text-muted-light);
+
+  --font-editorial: var(--font-editorial);
+  --font-functional: var(--font-functional);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-functional);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: var(--brand-rose);
+  color: var(--brand-ink);
 }
