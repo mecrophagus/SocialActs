@@ -2,6 +2,11 @@
 
 import Image from "next/image";
 import { useRef } from "react";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+} from "motion/react";
 
 const experiences = [
   {
@@ -57,7 +62,15 @@ const experiences = [
 ];
 
 export default function ExperienceJourney() {
+  const sectionRef = useRef<HTMLElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
+
+  const shouldReduceMotion = useReducedMotion();
+
+  const isInView = useInView(sectionRef, {
+    once: true,
+    margin: "-15% 0px -10% 0px",
+  });
 
   const scrollSlider = (direction: "previous" | "next") => {
     const slider = sliderRef.current;
@@ -66,9 +79,6 @@ export default function ExperienceJourney() {
       return;
     }
 
-    // Desplazamos aproximadamente el ancho de una tarjeta.
-    // El navegador mantiene la animación suave y Scroll Snap
-    // termina de colocar la siguiente tarjeta correctamente.
     const distance = slider.clientWidth * 0.72;
 
     slider.scrollBy({
@@ -79,13 +89,36 @@ export default function ExperienceJourney() {
 
   return (
     <section
+      ref={sectionRef}
       id="experiencias"
       aria-labelledby="experiences-title"
       className="overflow-hidden bg-surface-light py-24 text-text-on-light md:py-32 lg:py-36"
     >
       {/* Cabecera */}
       <div className="mx-auto max-w-350 px-6 lg:px-10">
-        <div className="grid gap-8 border-b border-black/10 pb-10 lg:grid-cols-[0.35fr_1fr_auto] lg:items-end">
+        <motion.div
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 36,
+                }
+          }
+          animate={
+            isInView
+              ? {
+                  opacity: 1,
+                  y: 0,
+                }
+              : undefined
+          }
+          transition={{
+            duration: 0.9,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="grid gap-8 border-b border-black/10 pb-10 lg:grid-cols-[0.35fr_1fr_auto] lg:items-end"
+        >
           <p className="font-functional text-xs uppercase tracking-[0.28em] text-brand-burgundy">
             02 / Experiencias
           </p>
@@ -134,18 +167,39 @@ export default function ExperienceJourney() {
               </span>
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Slider */}
       <div
         ref={sliderRef}
-        className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-6 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:gap-6 lg:px-[max(2.5rem,calc((100vw-1400px)/2))]"
+        className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-6 pb-6 [scrollbar-none] [&::-webkit-scrollbar]:hidden lg:gap-6 lg:px-[max(2.5rem,calc((100vw-1400px)/2))]"
       >
-        {experiences.map((experience) => (
-          <article
+        {experiences.map((experience, index) => (
+          <motion.article
             key={experience.id}
-            className="group relative aspect-[4/5] w-[78vw] max-w-[420px] shrink-0 snap-start overflow-hidden bg-surface-night md:w-[46vw] lg:w-[31vw] lg:max-w-[460px]"
+            initial={
+              shouldReduceMotion
+                ? false
+                : {
+                    opacity: 0,
+                    y: 50,
+                  }
+            }
+            animate={
+              isInView
+                ? {
+                    opacity: 1,
+                    y: 0,
+                  }
+                : undefined
+            }
+            transition={{
+              duration: 0.8,
+              delay: shouldReduceMotion ? 0 : 0.12 + index * 0.08,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="group relative aspect-4/5 w-[78vw] max-w-105 shrink-0 snap-start overflow-hidden bg-surface-night md:w-[46vw] lg:w-[31vw] lg:max-w-115"
           >
             {/* Imagen */}
             <Image
@@ -162,10 +216,10 @@ export default function ExperienceJourney() {
               className="absolute inset-0 bg-linear-to-t from-black/90 via-black/20 to-black/5"
             />
 
-            {/* Velo borgoña muy ligero */}
+            {/* Velo borgoña */}
             <div
               aria-hidden="true"
-              className="absolute inset-0 bg-brand-burgundy/[0.08] transition-colors duration-500 group-hover:bg-brand-burgundy/[0.14]"
+              className="absolute inset-0 bg-brand-burgundy/8 transition-colors duration-500 group-hover:bg-brand-burgundy/[0.14]"
             />
 
             {/* Número */}
@@ -186,7 +240,7 @@ export default function ExperienceJourney() {
                 {experience.eyebrow}
               </p>
 
-              <h3 className="font-editorial text-5xl leading-none tracking-[-0.05em] text-brand-ivory md:text-6xl">
+              <h3 className="font-editorial text-5xl leading-none tracking-tighter text-brand-ivory md:text-6xl">
                 {experience.name}.
               </h3>
 
@@ -207,10 +261,9 @@ export default function ExperienceJourney() {
                 </span>
               </div>
             </div>
-          </article>
+          </motion.article>
         ))}
 
-        {/* Espacio final para que la última tarjeta no quede pegada al viewport */}
         <div
           aria-hidden="true"
           className="w-1 shrink-0 lg:w-4"
@@ -218,7 +271,27 @@ export default function ExperienceJourney() {
       </div>
 
       {/* Mobile hint */}
-      <div className="mx-auto mt-2 flex max-w-350 items-center justify-between px-6 lg:hidden">
+      <motion.div
+        initial={
+          shouldReduceMotion
+            ? false
+            : {
+                opacity: 0,
+              }
+        }
+        animate={
+          isInView
+            ? {
+                opacity: 1,
+              }
+            : undefined
+        }
+        transition={{
+          duration: 0.8,
+          delay: 0.55,
+        }}
+        className="mx-auto mt-2 flex max-w-350 items-center justify-between px-6 lg:hidden"
+      >
         <p className="font-functional text-[10px] uppercase tracking-[0.24em] text-text-muted-light">
           Desliza para explorar
         </p>
@@ -229,7 +302,7 @@ export default function ExperienceJourney() {
         >
           ← →
         </span>
-      </div>
+      </motion.div>
     </section>
   );
 }

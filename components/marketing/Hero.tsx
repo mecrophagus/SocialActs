@@ -170,7 +170,7 @@ export default function Hero() {
               delay: 0.1,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="max-w-6xl font-editorial text-[clamp(3.6rem,16vw,5.5rem)] leading-[0.88] tracking-[-0.05em] md:text-[clamp(4.5rem,10vw,9rem)] md:leading-[0.86] md:tracking-[-0.055em]"
+            className="max-w-6xl font-editorial text-[clamp(3.6rem,16vw,5.5rem)] leading-[0.88] tracking-tighter md:text-[clamp(4.5rem,10vw,9rem)] md:leading-[0.86] md:tracking-[-0.055em]"
           >
             No todos los planes
             <br />
