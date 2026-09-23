@@ -1,23 +1,19 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 const navigation = [
   {
     id: "01",
     label: "Experiencias",
-    href: "#experiencias",
+    href: "/#experiencias",
   },
   {
     id: "02",
     label: "Perfiles",
-    href: "#perfiles",
-  },
-  {
-    id: "03",
-    label: "Cómo funciona",
-    href: "#como-funciona",
+    href: "/perfiles",
   },
 ];
 
@@ -36,8 +32,8 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    // Bloqueamos el scroll de la página mientras el menú
-    // fullscreen está abierto.
+    // Evitamos que la página del fondo siga desplazándose
+    // mientras el menú fullscreen está abierto.
     document.body.style.overflow = isMenuOpen ? "hidden" : "";
 
     return () => {
@@ -50,7 +46,7 @@ export default function Navbar() {
       return;
     }
 
-    // Permite cerrar el menú con Escape.
+    // Escape cierra el menú y devuelve el foco al botón.
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         closeMenu();
@@ -58,8 +54,8 @@ export default function Navbar() {
       }
     };
 
-    // Focus trap básico para que el teclado no pueda
-    // navegar detrás del menú abierto.
+    // Focus trap básico para mantener la navegación
+    // por teclado dentro del menú abierto.
     const handleTab = (event: KeyboardEvent) => {
       if (event.key !== "Tab" || !menuRef.current) {
         return;
@@ -106,16 +102,18 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Navegación principal */}
+      {/* Navegación global */}
       <header className="absolute inset-x-0 top-0 z-50 px-6 pt-6 lg:px-10 lg:pt-8">
         <nav
           aria-label="Navegación principal"
           className="mx-auto flex max-w-350 items-center justify-between"
         >
-          {/* Firma oficial */}
-          <a
-            href="#inicio"
-            aria-label="Lolitas — Ir al inicio"
+          {/* Logo oficial.
+              Siempre vuelve a la Home independientemente
+              de la página actual. */}
+          <Link
+            href="/"
+            aria-label="Lolitas — Ir a la página de inicio"
             onClick={closeMenu}
             className="relative z-50 inline-flex shrink-0 items-center"
           >
@@ -127,24 +125,24 @@ export default function Navbar() {
               priority
               className="h-auto w-29.5 md:w-33"
             />
-          </a>
+          </Link>
 
-          {/* Desktop */}
+          {/* Navegación desktop */}
           <div className="hidden items-center gap-10 lg:flex">
             {navigation.map((item) => (
-              <a
+              <Link
                 key={item.id}
                 href={item.href}
                 className="font-functional text-xs uppercase tracking-[0.16em] text-text-muted-dark transition-colors duration-300 hover:text-text-on-dark"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </div>
 
           {/* CTA desktop */}
-          <a
-            href="#perfiles"
+          <Link
+            href="/perfiles"
             className="group hidden items-center gap-3 border-b border-brand-rose/60 pb-1 font-functional text-xs uppercase tracking-[0.18em] text-text-on-dark transition-colors duration-300 hover:border-brand-rose lg:inline-flex"
           >
             Explorar
@@ -155,7 +153,7 @@ export default function Navbar() {
             >
               →
             </span>
-          </a>
+          </Link>
 
           {/* Botón mobile */}
           <button
@@ -175,7 +173,7 @@ export default function Navbar() {
               {isMenuOpen ? "Cerrar menú" : "Abrir menú"}
             </span>
 
-            {/* Icono hamburguesa → X */}
+            {/* Hamburguesa → X */}
             <span
               aria-hidden="true"
               className="relative block h-4 w-5"
@@ -223,7 +221,7 @@ export default function Navbar() {
         </div>
 
         <div className="relative flex min-h-dvh flex-col px-6 pb-8 pt-32">
-          {/* Cabecera editorial */}
+          {/* Cabecera */}
           <div className="mb-10 flex items-center justify-between border-b border-white/15 pb-5">
             <p className="font-functional text-[10px] uppercase tracking-[0.3em] text-brand-rose">
               Navegación
@@ -234,11 +232,11 @@ export default function Navbar() {
             </p>
           </div>
 
-          {/* Links principales */}
+          {/* Navegación mobile */}
           <div className="flex flex-1 flex-col justify-center">
             <div className="border-t border-white/15">
               {navigation.map((item) => (
-                <a
+                <Link
                   key={item.id}
                   href={item.href}
                   onClick={closeMenu}
@@ -259,15 +257,15 @@ export default function Navbar() {
                   >
                     →
                   </span>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
 
-          {/* CTA final */}
+          {/* Acción principal */}
           <div className="mt-10">
-            <a
-              href="#perfiles"
+            <Link
+              href="/perfiles"
               onClick={closeMenu}
               tabIndex={isMenuOpen ? 0 : -1}
               className="group flex items-center justify-between border-b border-brand-rose pb-4"
@@ -282,7 +280,7 @@ export default function Navbar() {
               >
                 →
               </span>
-            </a>
+            </Link>
 
             <div className="mt-6 flex items-center justify-between">
               <p className="max-w-48 font-functional text-xs leading-5 text-white/45">
