@@ -3,6 +3,19 @@ export type ProfileService = {
   price: string;
 };
 
+export type ProfileStatus =
+  | "draft"
+  | "review"
+  | "published"
+  | "suspended"
+  | "archived";
+
+export type VerificationStatus =
+  | "unverified"
+  | "pending"
+  | "verified"
+  | "rejected";
+
 export type Profile = {
   id: string;
   slug: string;
@@ -16,6 +29,8 @@ export type Profile = {
   services: ProfileService[];
   images: string[];
   featured: boolean;
+  status: ProfileStatus;
+  verificationStatus: VerificationStatus;
 };
 
 // Datos temporales de desarrollo.
@@ -42,6 +57,8 @@ export const profiles: Profile[] = [
       "/images/experiences/eventos.png",
     ],
     featured: true,
+    status: "published",
+    verificationStatus: "verified",
   },
   {
     id: "02",
@@ -64,6 +81,8 @@ export const profiles: Profile[] = [
       "/images/experiences/eventos.png",
     ],
     featured: true,
+    status: "review",
+    verificationStatus: "pending",
   },
   {
     id: "03",
@@ -86,6 +105,8 @@ export const profiles: Profile[] = [
       "/images/experiences/eventos.png",
     ],
     featured: true,
+    status: "draft",
+    verificationStatus: "unverified",
   },
 ];
 
