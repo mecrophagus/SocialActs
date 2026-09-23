@@ -1,44 +1,13 @@
 "use client";
 
-import Image from "next/image";
+import HeroMedia from "./HeroMedia";
 import { useRef } from "react";
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import Navbar from "@/components/layout/Navbar";
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
   const shouldReduceMotion = useReducedMotion();
-
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 85,
-    damping: 26,
-    mass: 0.9,
-  });
-
-  // Solo movemos ligeramente el fondo.
-  // El contenido permanece legible y estable.
-  const mediaY = useTransform(
-    smoothProgress,
-    [0, 1],
-    ["0%", "8%"],
-  );
-
-  const mediaScale = useTransform(
-    smoothProgress,
-    [0, 1],
-    [1, 1.04],
-  );
 
   return (
     <section
@@ -47,48 +16,9 @@ export default function Hero() {
       aria-labelledby="hero-title"
       className="relative min-h-screen overflow-hidden bg-surface-night text-text-on-dark"
     >
-      {/* CAPA 1 — MEDIA */}
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0"
-        style={
-          shouldReduceMotion
-            ? undefined
-            : {
-                y: mediaY,
-                scale: mediaScale,
-              }
-        }
-      >
-        {/* MOBILE */}
-        <div className="absolute inset-0 md:hidden">
-          <Image
-            src="/images/hero/lolitas-hero-mobile.jpg"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
-        </div>
-
-        {/* TABLET / DESKTOP */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          poster="/images/hero/lolitas-hero-mobile.jpg"
-          className="hidden h-full w-full object-cover md:block"
-        >
-          <source
-            src="/video/lolitas-hero.mp4"
-            type="video/mp4"
-          />
-        </video>
-      </motion.div>
-
+      <div className="absolute inset-0">
+        <HeroMedia />
+      </div>
       {/* CAPA 2 — OVERLAYS */}
       <div
         aria-hidden="true"
@@ -140,10 +70,7 @@ export default function Hero() {
             }}
             className="mb-8 flex items-center gap-4"
           >
-            <span
-              aria-hidden="true"
-              className="h-px w-8 bg-brand-rose"
-            />
+            <span aria-hidden="true" className="h-px w-8 bg-brand-rose" />
 
             <p className="font-functional text-xs uppercase tracking-[0.3em] text-text-muted-dark">
               Experiencias / Madrid
@@ -209,7 +136,6 @@ export default function Hero() {
               className="group inline-flex w-fit items-center gap-4 font-functional text-xs uppercase tracking-[0.2em] text-text-on-dark"
             >
               Descubrir
-
               <span
                 aria-hidden="true"
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 transition-transform duration-500 group-hover:translate-y-1"

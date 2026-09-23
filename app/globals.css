@@ -37,17 +37,9 @@
    * Los fallbacks evitan una interfaz rota mientras
    * preparamos las fuentes web locales definitivas.
    */
-  --font-editorial:
-    "DejaVu Serif",
-    Georgia,
-    "Times New Roman",
-    serif;
+  --font-editorial: "DejaVu Serif", Georgia, "Times New Roman", serif;
 
-  --font-functional:
-    "DejaVu Sans",
-    Arial,
-    Helvetica,
-    sans-serif;
+  --font-functional: "DejaVu Sans", Arial, Helvetica, sans-serif;
 
   --background: var(--surface-night);
   --foreground: var(--text-on-dark);
@@ -104,4 +96,71 @@ select {
 ::selection {
   background: var(--brand-rose);
   color: var(--brand-ink);
+}
+.eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-burgundy);
+}
+.editorial-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 44px;
+  border-bottom: 1px solid currentColor;
+  font-size: 0.875rem;
+  padding: 0.65rem 0;
+}
+.auth-input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: transparent;
+  border-bottom: 1px solid #11111160;
+}
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 5px;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  padding: 1rem;
+  background: var(--brand-ivory);
+  color: var(--brand-burgundy);
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+@media (min-width: 1024px) {
+  .profile-card:nth-child(4n + 2) {
+    padding-top: 1.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.eyebrow.text-brand-rose {
+  color: var(--brand-rose);
 }

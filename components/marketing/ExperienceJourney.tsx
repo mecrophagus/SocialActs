@@ -1,12 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
-import {
-  motion,
-  useInView,
-  useReducedMotion,
-} from "motion/react";
+import { motion, useInView, useReducedMotion } from "motion/react";
 
 const experiences = [
   {
@@ -26,8 +23,7 @@ const experiences = [
     description:
       "Una terraza, un bar especial o ese lugar que apetece descubrir acompañado.",
     image: "/images/experiences/copas.png",
-    imageAlt:
-      "Copas sobre una barra elegante con iluminación nocturna cálida.",
+    imageAlt: "Copas sobre una barra elegante con iluminación nocturna cálida.",
   },
   {
     id: "03",
@@ -83,7 +79,7 @@ export default function ExperienceJourney() {
 
     slider.scrollBy({
       left: direction === "next" ? distance : -distance,
-      behavior: "smooth",
+      behavior: shouldReduceMotion ? "auto" : "smooth",
     });
   };
 
@@ -228,10 +224,7 @@ export default function ExperienceJourney() {
                 {experience.id}
               </span>
 
-              <span
-                aria-hidden="true"
-                className="h-px w-7 bg-brand-rose/70"
-              />
+              <span aria-hidden="true" className="h-px w-7 bg-brand-rose/70" />
             </div>
 
             {/* Contenido */}
@@ -249,9 +242,13 @@ export default function ExperienceJourney() {
               </p>
 
               <div className="mt-6 flex items-center justify-between border-t border-white/15 pt-4">
-                <span className="font-functional text-[10px] uppercase tracking-[0.22em] text-white/55">
+                <Link
+                  href={`/perfiles?experiencia=${encodeURIComponent(experience.name)}#explorar`}
+                  className="py-3 text-xs text-brand-ivory after:absolute after:inset-0"
+                  aria-label={`Descubrir perfiles para ${experience.name}`}
+                >
                   Descubrir
-                </span>
+                </Link>
 
                 <span
                   aria-hidden="true"
@@ -264,10 +261,7 @@ export default function ExperienceJourney() {
           </motion.article>
         ))}
 
-        <div
-          aria-hidden="true"
-          className="w-1 shrink-0 lg:w-4"
-        />
+        <div aria-hidden="true" className="w-1 shrink-0 lg:w-4" />
       </div>
 
       {/* Mobile hint */}

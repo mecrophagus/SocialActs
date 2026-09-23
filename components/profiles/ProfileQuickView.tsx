@@ -9,15 +9,17 @@ type ProfileQuickViewProps = {
   profile: Profile;
   onClose: () => void;
   onOpenGallery: (index: number) => void;
+  suspended?: boolean;
 };
 
 export default function ProfileQuickView({
   profile,
   onClose,
   onOpenGallery,
+  suspended = false,
 }: ProfileQuickViewProps) {
   const [activeImage, setActiveImage] = useState(0);
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const previousImage = () => {
@@ -33,59 +35,33 @@ export default function ProfileQuickView({
   };
 
   useEffect(() => {
+    const dialog = dialogRef.current;
+    const opener = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    dialog?.showModal();
     document.body.style.overflow = "hidden";
     closeButtonRef.current?.focus();
-
-    const handleKeyboard = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-
-      if (event.key === "ArrowLeft") {
-        previousImage();
-      }
-
-      if (event.key === "ArrowRight") {
-        nextImage();
-      }
-
-      if (event.key === "Tab" && dialogRef.current) {
-        const focusable =
-          dialogRef.current.querySelectorAll<HTMLElement>(
-            'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
-          );
-
-        if (!focusable.length) {
-          return;
-        }
-
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last.focus();
-        } else if (
-          !event.shiftKey &&
-          document.activeElement === last
-        ) {
-          event.preventDefault();
-          first.focus();
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyboard);
-
     return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", handleKeyboard);
+      dialog?.close();
+      document.body.style.overflow = overflow;
+      opener?.focus();
     };
-  });
+  }, []);
 
   return (
-    <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 p-0 backdrop-blur-sm md:p-8"
+    <dialog
+      ref={dialogRef}
+      aria-labelledby="quick-view-title"
+      onCancel={(event) => {
+        event.preventDefault();
+        if (!suspended) onClose();
+      }}
+      onKeyDown={(event) => {
+        if (suspended) return;
+        if (event.key === "ArrowLeft") previousImage();
+        if (event.key === "ArrowRight") nextImage();
+      }}
+      className="fixed inset-0 m-auto h-dvh max-h-dvh w-full max-w-none bg-transparent p-0 backdrop:bg-black/75 md:h-[90vh] md:max-w-7xl"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) {
           onClose();
@@ -93,10 +69,7 @@ export default function ProfileQuickView({
       }}
     >
       <div
-        ref={dialogRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="quick-view-title"
+        inert={suspended}
         className="relative grid h-dvh w-full overflow-y-auto bg-brand-ivory text-brand-ink md:h-[90vh] md:max-w-7xl md:grid-cols-[1.05fr_0.95fr] md:overflow-hidden"
       >
         {/* Carrusel */}
@@ -149,7 +122,7 @@ export default function ProfileQuickView({
             type="button"
             onClick={onClose}
             aria-label="Cerrar vista rápida"
-            className="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-full border border-black/15 text-xl transition-colors hover:bg-brand-ink hover:text-brand-ivory"
+            className="fixed right-6 top-6 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-black/15 bg-brand-ivory text-xl transition-colors hover:bg-brand-ink hover:text-brand-ivory"
           >
             ×
           </button>
@@ -179,9 +152,7 @@ export default function ProfileQuickView({
                 key={service.name}
                 className="flex items-center justify-between border-b border-black/10 py-4"
               >
-                <span className="font-functional text-sm">
-                  {service.name}
-                </span>
+                <span className="font-functional text-sm">{service.name}</span>
 
                 <span className="font-functional text-xs text-text-muted-light">
                   {service.price}
@@ -196,9 +167,7 @@ export default function ProfileQuickView({
                 Edad
               </p>
 
-              <p className="mt-2 font-editorial text-xl">
-                {profile.age}
-              </p>
+              <p className="mt-2 font-editorial text-xl">{profile.age}</p>
             </div>
 
             <div>
@@ -229,6 +198,6 @@ export default function ProfileQuickView({
           </Link>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }

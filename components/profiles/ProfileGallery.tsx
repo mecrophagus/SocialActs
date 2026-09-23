@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 type ProfileGalleryProps = {
   name: string;
@@ -19,45 +19,41 @@ export default function ProfileGallery({
   onClose,
 }: ProfileGalleryProps) {
   const previous = () => {
-    onChange(
-      activeIndex === 0 ? images.length - 1 : activeIndex - 1,
-    );
+    onChange(activeIndex === 0 ? images.length - 1 : activeIndex - 1);
   };
 
   const next = () => {
-    onChange(
-      activeIndex === images.length - 1 ? 0 : activeIndex + 1,
-    );
+    onChange(activeIndex === images.length - 1 ? 0 : activeIndex + 1);
   };
 
+  const dialogRef = useRef<HTMLDialogElement>(null);
   useEffect(() => {
-    const handleKeyboard = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-
-      if (event.key === "ArrowLeft") {
-        previous();
-      }
-
-      if (event.key === "ArrowRight") {
-        next();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyboard);
-
+    const opener = document.activeElement as HTMLElement | null;
+    const dialog = dialogRef.current;
+    const overflow = document.body.style.overflow;
+    dialog?.showModal();
+    document.body.style.overflow = "hidden";
     return () => {
-      window.removeEventListener("keydown", handleKeyboard);
+      dialog?.close();
+      document.body.style.overflow = overflow;
+      opener?.focus();
     };
-  });
+  }, []);
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
+    <dialog
+      ref={dialogRef}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      onKeyDown={(event) => {
+        event.stopPropagation();
+        if (event.key === "ArrowLeft") previous();
+        if (event.key === "ArrowRight") next();
+      }}
       aria-label={`Galería de ${name}`}
-      className="fixed inset-0 z-[80] bg-black text-white"
+      className="fixed inset-0 m-0 h-dvh max-h-dvh w-screen max-w-none bg-black p-0 text-white"
     >
       <div className="relative flex min-h-dvh items-center justify-center px-5 py-20 md:px-16">
         <button
@@ -103,6 +99,6 @@ export default function ProfileGallery({
           {String(images.length).padStart(2, "0")}
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }
